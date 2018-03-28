@@ -255,6 +255,11 @@ GEOSisValidDetail(const Geometry *g, int flags,
     return GEOSisValidDetail_r( handle, g, flags, reason, location );
 }
 
+GEOSGeometry* GEOSMakeValid(const GEOSGeometry* g)
+{
+    return GEOSMakeValid_r( handle, g );
+}
+
 //-----------------------------------------------------------------
 // general purpose
 //-----------------------------------------------------------------
@@ -701,6 +706,12 @@ Geometry *
 GEOSPolygonize(const Geometry * const * g, unsigned int ngeoms)
 {
     return GEOSPolygonize_r( handle, g, ngeoms );
+}
+
+Geometry *
+GEOSBuildArea(const Geometry *g)
+{
+    return GEOSBuildArea_r( handle, g );
 }
 
 Geometry *

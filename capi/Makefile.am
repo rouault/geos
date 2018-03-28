@@ -18,6 +18,8 @@ lib_LTLIBRARIES = libgeos_c.la
 DIR_SOURCES = \
     geos_c.cpp \
     geos_ts_c.cpp \
+    BuildArea.cpp \
+    MakeValid.cpp \
     $(NULL)
 
 libgeos_c_la_SOURCES = $(DIR_SOURCES)

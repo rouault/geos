@@ -41,9 +41,9 @@ if(GEOS_ENABLE_TESTS)
   add_executable(test_xmltester ${xmltester_SOURCES})
 
   if(APPLE AND GEOS_ENABLE_MACOSX_FRAMEWORK)
-    target_link_libraries(test_xmltester GEOS)
+    target_link_libraries(test_xmltester GEOS geos_c)
  	else()
-    target_link_libraries(test_xmltester geos)
+    target_link_libraries(test_xmltester geos geos_c)
   endif()
 
   set(XMLTESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -105,7 +105,8 @@ if(GEOS_ENABLE_TESTS)
     ${XMLTESTS_DIR}/hole_from_shell.xml
     ${XMLTESTS_DIR}/hole_red.xml
     ${XMLTESTS_DIR}/safe/16595.xml
-    ${XMLTESTS_DIR}/safe/16596.xml)
+    ${XMLTESTS_DIR}/safe/16596.xml
+    ${XMLTESTS_DIR}/makevalid.xml)
 
   add_test(test_xmltester ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_xmltester ${SAVE_XMLTESTS})
 

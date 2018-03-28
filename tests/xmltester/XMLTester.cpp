@@ -24,6 +24,8 @@
 #pragma warning(disable : 4127)
 #endif
 
+#include "geos_c.h"
+
 #include <geos/geom/Point.h>
 #include <geos/geom/LineString.h>
 #include <geos/geom/LinearRing.h>
@@ -1476,6 +1478,38 @@ XMLTester::parseTest(const TiXmlNode* node)
 
             // TODO: Use a tolerance ?
             success = ( distO == distE ) ? 1 : 0;
+        }
+
+        else if (opName=="makevalid")
+        {
+            geom::Geometry *gT=gA;
+            if ( ( opArg1 == "B" || opArg1 == "b" ) && gB ) gT=gB;
+
+            GeomPtr gRes(parseGeometry(opRes, "expected"));
+            gRes->normalize();
+
+            GEOSContextHandle_t handle = GEOS_init_r();
+            geom::Geometry* gGot = reinterpret_cast<geom::Geometry*>(
+                GEOSMakeValid_r(handle, (const GEOSGeometry*)gT));
+            GEOS_finish_r(handle);
+            if( gGot )
+            {
+                GeomPtr gRealRes(gGot);
+                gRealRes->normalize();
+
+                if (gRes->compareTo(gRealRes.get())==0) success=1;
+
+                actual_result=printGeom(gRealRes.get());
+                expected_result=printGeom(gRes.get());
+                if( actual_result == expected_result ) success=1;
+
+                if ( testValidOutput )
+                    success &= int(testValid(gRealRes.get(), "result"));
+            }
+            else
+            {
+                success = false;
+            }
         }
 
         else

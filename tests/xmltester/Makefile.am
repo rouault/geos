@@ -95,7 +95,8 @@ SAFE_XMLTESTS=$(srcdir)/tests/testLeaksBig.xml \
 	$(srcdir)/tests/hole_red.xml \
 	$(srcdir)/tests/safe/16595.xml \
 	$(srcdir)/tests/safe/16596.xml \
-	$(srcdir)/tests/safe/TestBufferJagged.xml
+	$(srcdir)/tests/safe/TestBufferJagged.xml \
+	$(srcdir)/tests/makevalid.xml
 
 INVALID_OUTPUT_XMLTESTS =
 
@@ -134,9 +135,9 @@ XMLTester_SOURCES = \
 	SingleSidedBufferResultMatcher.h \
 	SingleSidedBufferResultMatcher.cpp
 
-XMLTester_LDADD = $(LIBS)
+XMLTester_LDADD = $(LIBS) $(top_builddir)/capi/libgeos_c.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include -I../../capi
 AM_CPPFLAGS += -I$(top_srcdir)/src/io/tinyxml -DTIXML_USE_STL
 
 static:

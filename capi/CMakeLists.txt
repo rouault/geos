@@ -17,7 +17,9 @@ endif()
 
 set(geos_c_SOURCES
   geos_c.cpp
-  geos_ts_c.cpp)
+  geos_ts_c.cpp
+  BuildArea.cpp
+  MakeValid.cpp)
 
 file(GLOB geos_capi_HEADERS ${CMAKE_BINARY_DIR}/capi/*.h) # fix source_group issue
 
