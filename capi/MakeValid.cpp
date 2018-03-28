@@ -637,7 +637,15 @@ GEOSGeometry* GEOSMakeValid_r(GEOSContextHandle_t handle,
     * Step 2: return what we got so far if already valid
     */
 
+    // We don't want notice messages from isValid() to be emitted to
+    // handle.
+    GEOSMessageHandler noticeMessageOldBak = handle->noticeMessageOld;
+    GEOSMessageHandler_r noticeMessageNewBak = handle->noticeMessageNew;
+    handle->noticeMessageOld = nullptr;
+    handle->noticeMessageNew = nullptr;
     ret_char = GEOSisValid_r(handle, gin);
+    handle->noticeMessageOld = noticeMessageOldBak;
+    handle->noticeMessageNew = noticeMessageNewBak;
     if ( ret_char == 2 )
     {
         /* I don't think should ever happen */
