@@ -38,6 +38,7 @@
 #include <geos/operation/buffer/BufferParameters.h>
 #include <geos/operation/buffer/BufferOp.h>
 #include <geos/operation/polygonize/BuildArea.h>
+#include <geos/operation/valid/MakeValid.h>
 #include <geos/util.h>
 #include <geos/util/Interrupt.h>
 //#include <geos/geomgraph.h>
@@ -1392,6 +1393,33 @@ XMLTester::parseTest(const TiXmlNode* node)
             gExpected->normalize();
 
             auto gGot = BuildArea().build(gA);
+            if( gGot )
+            {
+                GeomPtr gRealRes(gGot.release());
+                gRealRes->normalize();
+
+                if (gExpected->equals(gRealRes.get())) success=1;
+
+                actual_result=printGeom(gRealRes.get());
+                expected_result=printGeom(gExpected.get());
+                if( actual_result == expected_result ) success=1;
+
+                if ( testValidOutput )
+                    success &= int(testValid(gRealRes.get(), "result"));
+            }
+            else
+            {
+                success = false;
+            }
+        }
+
+        else if (opName == "makevalid")
+        {
+            typedef std::unique_ptr<geom::Geometry> GeomPtr;
+            GeomPtr gExpected(parseGeometry(opRes, "expected"));
+            gExpected->normalize();
+
+            auto gGot = geos::operation::valid::MakeValid().build(gA);
             if( gGot )
             {
                 GeomPtr gRealRes(gGot.release());

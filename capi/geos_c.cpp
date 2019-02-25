@@ -600,6 +600,12 @@ GEOSGeomGetLength(const Geometry *g, double *length)
         return GEOSBuildArea_r(handle, g);
     }
 
+    Geometry*
+    GEOSMakeValid(const Geometry* g)
+    {
+        return GEOSMakeValid_r(handle, g);
+    }
+
 /*
  * Call only on LINESTRING
  * returns -1 on exception
