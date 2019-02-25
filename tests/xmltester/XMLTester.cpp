@@ -37,6 +37,7 @@
 #include <geos/operation/buffer/BufferBuilder.h>
 #include <geos/operation/buffer/BufferParameters.h>
 #include <geos/operation/buffer/BufferOp.h>
+#include <geos/operation/polygonize/BuildArea.h>
 #include <geos/util.h>
 #include <geos/util/Interrupt.h>
 //#include <geos/geomgraph.h>
@@ -1384,8 +1385,34 @@ XMLTester::parseTest(const TiXmlNode* node)
             success = ( distO == distE ) ? 1 : 0;
         }
 
-        else
+        else if (opName == "buildarea")
         {
+            typedef std::unique_ptr<geom::Geometry> GeomPtr;
+            GeomPtr gExpected(parseGeometry(opRes, "expected"));
+            gExpected->normalize();
+
+            auto gGot = BuildArea().build(gA);
+            if( gGot )
+            {
+                GeomPtr gRealRes(gGot.release());
+                gRealRes->normalize();
+
+                if (gExpected->equals(gRealRes.get())) success=1;
+
+                actual_result=printGeom(gRealRes.get());
+                expected_result=printGeom(gExpected.get());
+                if( actual_result == expected_result ) success=1;
+
+                if ( testValidOutput )
+                    success &= int(testValid(gRealRes.get(), "result"));
+            }
+            else
+            {
+                success = false;
+            }
+        }
+
+        else {
             std::cerr << *curr_file << ":";
             std::cerr << " case" << caseCount << ":";
             std::cerr << " test" << testCount << ": "

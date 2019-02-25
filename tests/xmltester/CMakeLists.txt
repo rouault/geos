@@ -60,6 +60,7 @@ if(GEOS_ENABLE_TESTS)
     ${XMLTESTS_DIR}/bug188.xml
     ${XMLTESTS_DIR}/bug244.xml
     ${XMLTESTS_DIR}/bug275.xml
+    ${XMLTESTS_DIR}/buildarea.xml
     ${XMLTESTS_DIR}/general/TestBoundary.xml
     ${XMLTESTS_DIR}/general/TestBuffer.xml
     ${XMLTESTS_DIR}/general/TestBufferMitredJoin.xml

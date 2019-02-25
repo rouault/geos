@@ -147,7 +147,8 @@ geos_unit_SOURCES = \
 	capi/GEOSRelatePatternMatchTest.cpp \
 	capi/GEOSUnaryUnionTest.cpp \
 	capi/GEOSisValidDetailTest.cpp \
-	capi/GEOSisClosedTest.cpp
+	capi/GEOSisClosedTest.cpp \
+	capi/GEOSBuildArea.cpp
 
 noinst_HEADERS = \
 	utility.h

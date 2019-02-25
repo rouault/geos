@@ -594,6 +594,12 @@ GEOSGeomGetLength(const Geometry *g, double *length)
 	return GEOSGeomGetLength_r(handle, g, length);
 }
 
+    Geometry*
+    GEOSBuildArea(const Geometry* g)
+    {
+        return GEOSBuildArea_r(handle, g);
+    }
+
 /*
  * Call only on LINESTRING
  * returns -1 on exception
