@@ -110,7 +110,8 @@ extern "C"
 #endif
 
 #ifndef ISNAN
-#error "Can not compile without isnan function or macro"
+//#error "Can not compile without isnan function or macro"
+#define ISNAN(x) (std::isnan(x))
 #endif
 
 #endif
