@@ -79,7 +79,6 @@ void DD::selfAdd(double yhi, double ylo)
     double zlo = e + (H - zhi);
     hi = zhi;
     lo = zlo;
-    return;
 }
 
 /* public */
@@ -95,13 +94,12 @@ void DD::selfAdd(double y)
     h = f + (S - H);
     hi = H + h;
     lo = h + (H - hi);
-    return;
 }
 
 /* public */
 DD operator+(const DD &lhs, const DD &rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfAdd(rhs);
     return rv;
 }
@@ -109,7 +107,7 @@ DD operator+(const DD &lhs, const DD &rhs)
 /* public */
 DD operator+(const DD &lhs, double rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfAdd(rhs);
     return rv;
 }
@@ -135,7 +133,7 @@ void DD::selfSubtract(double y)
 /* public */
 DD operator-(const DD &lhs, const DD &rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfSubtract(rhs);
     return rv;
 }
@@ -143,7 +141,7 @@ DD operator-(const DD &lhs, const DD &rhs)
 /* public */
 DD operator-(const DD &lhs, double rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfSubtract(rhs);
     return rv;
 }
@@ -160,7 +158,6 @@ void DD::selfMultiply(double yhi, double ylo)
     double zlo = c+hx;
     hi = zhi;
     lo = zlo;
-    return;
 }
 
 /* public */
@@ -178,7 +175,7 @@ void DD::selfMultiply(double y)
 /* public */
 DD operator*(const DD &lhs, const DD &rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfMultiply(rhs);
     return rv;
 }
@@ -186,7 +183,7 @@ DD operator*(const DD &lhs, const DD &rhs)
 /* public */
 DD operator*(const DD &lhs, double rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfMultiply(rhs);
     return rv;
 }
@@ -205,7 +202,6 @@ void DD::selfDivide(double yhi, double ylo)
     u = C+c;
     hi = u;
     lo = (C-u)+c;
-    return;
 }
 
 /* public */
@@ -223,7 +219,7 @@ void DD::selfDivide(double y)
 /* public */
 DD operator/(const DD &lhs, const DD &rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfDivide(rhs);
     return rv;
 }
@@ -231,7 +227,7 @@ DD operator/(const DD &lhs, const DD &rhs)
 /* public */
 DD operator/(const DD &lhs, double rhs)
 {
-    DD rv(lhs.hi, lhs.lo);
+    DD rv(lhs);
     rv.selfDivide(rhs);
     return rv;
 }
@@ -239,7 +235,7 @@ DD operator/(const DD &lhs, double rhs)
 /* public */
 DD DD::negate() const
 {
-    DD rv(hi, lo);
+    DD rv(*this);
     if (rv.isNaN())
     {
         return rv;
@@ -267,24 +263,20 @@ DD DD::reciprocal() const
 
 DD DD::floor() const
 {
-    DD rv(hi, lo);
-    if (isNaN()) return rv;
+    if (isNaN()) return *this;
     double fhi = std::floor(hi);
     double flo = 0.0;
     // Hi is already integral.  Floor the low word
     if (fhi == hi) {
       flo = std::floor(lo);
     }
-      // do we need to renormalize here?
-    rv.hi = fhi;
-    rv.lo = flo;
-    return rv;
+    // do we need to renormalize here?
+    return DD(fhi, flo);
 }
 
 DD DD::ceil() const
 {
-    DD rv(hi, lo);
-    if (isNaN()) return rv;
+    if (isNaN()) return *this;
     double fhi = std::ceil(hi);
     double flo = 0.0;
     // Hi is already integral.  Ceil the low word
@@ -292,9 +284,7 @@ DD DD::ceil() const
       flo = std::ceil(lo);
       // do we need to renormalize here?
     }
-    rv.hi = fhi;
-    rv.lo = flo;
-    return rv;
+    return DD(fhi, flo);
 }
 
 int DD::signum() const
@@ -308,9 +298,9 @@ int DD::signum() const
 
 DD DD::rint() const
 {
-    DD rv(hi, lo);
+    DD rv(*this);
     if (isNaN()) return rv;
-     return (rv + 0.5).floor();
+    return (rv + 0.5).floor();
 }
 
 /* public static */
@@ -363,12 +353,12 @@ DD DD::pow(const DD &d, int exp)
     if (n > 1) {
         /* Use binary exponentiation */
         while (n > 0) {
-        if (n % 2 == 1) {
-            s.selfMultiply(r);
-        }
-        n /= 2;
-        if (n > 0)
-            r = r*r;
+            if (n % 2 == 1) {
+                s.selfMultiply(r);
+            }
+            n /= 2;
+            if (n > 0)
+                r = r*r;
         }
     } else {
         s = r;
