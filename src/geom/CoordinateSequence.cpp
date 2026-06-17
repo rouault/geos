@@ -137,8 +137,12 @@ template<typename T>
 void fillVector(std::vector<double> & v)
 {
     const T c;
-    T* from = reinterpret_cast<T*>(v.data());
-    T* to = reinterpret_cast<T*>(v.data() + v.size());
+    T* from;
+    double* fromDouble= v.data();
+    memcpy(&from, &fromDouble, sizeof(from));
+    T* to;
+    double* toDouble = v.data() + v.size();
+    memcpy(&to, &toDouble, sizeof(to));
     std::fill(from, to, c);
 }
 
@@ -612,7 +616,9 @@ CoordinateSequence::setPoints(const std::vector<Coordinate>& v)
     m_hasm = false;
 
     m_vect.resize(m_stride * v.size());
-    const double* cbuf = reinterpret_cast<const double*>(v.data());
+    const Coordinate* cbufCoord = v.data();
+    const double* cbuf;
+    memcpy(&cbuf, &cbufCoord, sizeof(cbuf));
     m_vect.assign(cbuf, cbuf + m_vect.size());
 }
 
@@ -665,7 +671,9 @@ void
 CoordinateSequence::toVector(std::vector<Coordinate>& out) const
 {
     if (getCoordinateType() == CoordinateType::XYZ) {
-        const Coordinate* cbuf = reinterpret_cast<const Coordinate*>(m_vect.data());
+        const double* cbufDouble = m_vect.data();
+        const Coordinate* cbuf;
+        memcpy(&cbuf, &cbufDouble, sizeof(cbuf));
         out.insert(out.end(), cbuf, cbuf + size());
     } else if (hasZ()) {
         for (const auto& c : items<Coordinate>()) {
@@ -682,7 +690,9 @@ void
 CoordinateSequence::toVector(std::vector<CoordinateXY>& out) const
 {
     if (stride() == 2) {
-        const CoordinateXY* cbuf = reinterpret_cast<const CoordinateXY*>(m_vect.data());
+        const double* cbufDouble = m_vect.data();
+        const CoordinateXY* cbuf;
+        memcpy(&cbuf, &cbufDouble, sizeof(cbuf));
         out.insert(out.end(), cbuf, cbuf + size());
     } else {
         for (const CoordinateXY& c : items<CoordinateXY>()) {

@@ -21,12 +21,14 @@
 #include <geos/export.h>
 
 #include <cassert>
+#include <cstring> // for memcpy
 #include <iostream>
 #include <vector>
 #include <set>
 #include <memory>
 
 #include <geos/noding/SegmentNode.h> // for composition
+#include <geos/noding/SegmentString.h>
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -176,7 +178,10 @@ public:
     template<typename CoordType>
     void add(const CoordType& intPt, std::size_t segmentIndex) {
         // Cast edge to SegmentString to avoid circular dependency between NodedSegmentString and SegmentNodeList
-        nodeMap.emplace_back(edge, intPt, segmentIndex, reinterpret_cast<const SegmentString&>(edge).getSegmentOctant(segmentIndex));
+        SegmentString* ss;
+        const NodedSegmentString* edgePtr = &edge;
+        memcpy(&ss, &edgePtr, sizeof(ss));
+        nodeMap.emplace_back(edge, intPt, segmentIndex, ss->getSegmentOctant(segmentIndex));
         ready = false;
     }
 

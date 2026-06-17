@@ -21,6 +21,7 @@
 #include <geos/geom/CoordinateSequenceIterator.h>
 
 #include <cassert>
+#include <cstring> // for memcpy
 #include <vector>
 #include <iostream>
 #include <iosfwd> // ostream
@@ -257,7 +258,10 @@ public:
         static_assert(std::is_base_of<CoordinateXY, T>::value, "Must be a Coordinate class");
         assert(sizeof(T) <= sizeof(double) * stride());
         assert(i*stride() < m_vect.size());
-        const T* orig = reinterpret_cast<const T*>(&m_vect[i*stride()]);
+        // Nasty trick to cast an element of a vector of double to T
+        const void* pSrc = &m_vect[i*stride()];
+        const T* orig;
+        memcpy(&orig, &pSrc, sizeof(orig));
         return *orig;
     }
 
@@ -269,7 +273,10 @@ public:
         static_assert(std::is_base_of<CoordinateXY, T>::value, "Must be a Coordinate class");
         assert(sizeof(T) <= sizeof(double) * stride());
         assert(i*stride() < m_vect.size());
-        T* orig = reinterpret_cast<T*>(&m_vect[i*stride()]);
+        // Nasty trick to cast an element of a vector of double to T
+        void* pSrc = &m_vect[i*stride()];
+        T* orig;
+        memcpy(&orig, &pSrc, sizeof(orig));
         return *orig;
     }
 
@@ -436,14 +443,22 @@ public:
     template<typename T=Coordinate>
     const T& front() const
     {
-        return *(reinterpret_cast<const T*>(m_vect.data()));
+        // Nasty trick to cast an element of a vector of double to T
+        const void* pSrc = m_vect.data();
+        const T* orig;
+        memcpy(&orig, &pSrc, sizeof(orig));
+        return *orig;
     }
 
     /// Return first Coordinate in the sequence
     template<typename T=Coordinate>
     T& front()
     {
-        return *(reinterpret_cast<T*>(m_vect.data()));
+        // Nasty trick to cast an element of a vector of double to T
+        void* pSrc = m_vect.data();
+        T* orig;
+        memcpy(&orig, &pSrc, sizeof(orig));
+        return *orig;
     }
 
     /// Pushes all Coordinates of this sequence into the provided vector.
